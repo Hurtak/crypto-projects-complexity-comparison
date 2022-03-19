@@ -13,13 +13,22 @@ const paths = {
   clocBin: path.join(pathsRoot, "./node_modules/.bin/cloc"),
 };
 
-const repoGeneralExcludes = ["JSON", "SVG", "Markdown", "XML", "YAML", "HTML"];
+const repoGeneralExcludes = [
+  "JSON",
+  "SVG",
+  "Markdown",
+  "XML",
+  "YAML",
+  "HTML",
+  "CSS",
+  "reStructuredText",
+];
 
 const repositories = {
-  bitcoin: {
-    key: "bitcoin",
+  btcBitcoinCore: {
+    key: "bitcoin-core",
     branch: "master",
-    root: path.join(paths.root, "./repositories/bitcoin"),
+    root: path.join(paths.root, "./repositories/btc-bitcoin-core"),
     cloc: {
       excludeLang: [...repoGeneralExcludes, "Qt Linguist", "Qt"],
       excludeMatchDirectory: "test",
@@ -27,10 +36,21 @@ const repositories = {
     },
   },
 
-  ethereumGo: {
-    key: "go-ethereum",
+  ethGoEthereum: {
+    key: "eth-go-ethereum",
     branch: "master",
-    root: path.join(paths.root, "./repositories/go-ethereum"),
+    root: path.join(paths.root, "./repositories/eth-go-ethereum"),
+    cloc: {
+      excludeLang: repoGeneralExcludes,
+      excludeMatchDirectory: "test",
+      excludeMatchFile: ".*test.*",
+    },
+  },
+
+  ethSolidity: {
+    key: "eth-solidity",
+    branch: "develop",
+    root: path.join(paths.root, "./repositories/eth-solidity"),
     cloc: {
       excludeLang: repoGeneralExcludes,
       excludeMatchDirectory: "test",
@@ -52,8 +72,16 @@ const getLoc = async (repo) => {
     repo.root,
   ]);
 
-  const loc = JSON.parse(res.stdout).SUM.code;
-  return loc;
+  try {
+    const loc = JSON.parse(res.stdout).SUM.code;
+    return loc;
+  } catch (e) {
+    // console.error("Error parsing");
+    // console.error(res);
+    // console.error(e);
+    // process.exit(1);
+    return 0;
+  }
 };
 
 const gitDateOfFirstAndLastCommit = async (repo) => {
@@ -86,6 +114,12 @@ const gitCheckoutToCommit = async (repository, commitHash) => {
   });
 };
 
+const gitCheckoutToLatest = async (repository) => {
+  const res = await execa("git", [`checkout`, repository.branch], {
+    cwd: repository.root,
+  });
+};
+
 const getChartDates = async (startDate, endDate) => {
   return eachMonthOfInterval({ start: startDate, end: endDate });
 };
@@ -101,8 +135,10 @@ const getCommitClosestToDate = async (repository, date) => {
 };
 
 const main = async () => {
+  //
+  // Gather data
+  //
   const res = {};
-
   for (const repo of Object.values(repositories)) {
     res[repo.key] = [];
 
@@ -115,29 +151,35 @@ const main = async () => {
       dates.firstRounded,
       dates.lastRounded
     );
-    for (const date of chartDates.slice(0, 5)) {
+
+    for (const date of chartDates) {
       console.log(`  processing ${date.toISOString()}`);
       const commitHash = await getCommitClosestToDate(repo, date);
       console.log(`    checking out to ${commitHash}`);
       await gitCheckoutToCommit(repo, commitHash);
       const loc = await getLoc(repo);
-      console.log(`    ${loc}`);
+      console.log(`    loc ${loc.toLocaleString()}`);
 
       res[repo.key].push({ date: date, loc: loc });
     }
+
+    await gitCheckoutToLatest(repo);
   }
   console.log("Finished processing");
   console.log();
 
-  await fs.rmdir(paths.result, {
+  //
+  // Write data to result folder
+  //
+  await fs.rm(paths.result, {
     recursive: true,
-    force: true,
   });
   await fs.mkdir(paths.result, { recursive: true });
 
-  console.log(`Writing to ${paths.result}`);
+  const filePathRes = "res.json";
+  console.log(`Writing to ${filePathRes}`);
   await fs.writeFile(
-    path.join(paths.result, "res.json"),
+    path.join(paths.result, filePathRes),
     JSON.stringify(res, null, 2)
   );
 
@@ -147,8 +189,10 @@ const main = async () => {
     console.log(`Writing to ${filePath}`);
     await fs.writeFile(filePath, csv);
   }
+
+  //
+  // Generate chart
+  //
 };
 
 main();
-
-// cloc
