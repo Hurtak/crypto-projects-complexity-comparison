@@ -1,0 +1,3 @@
+[submodule "bitcoin"]
+	path = repositories§/foo
+	url = git@github.com:bitcoin/bitcoin.git
