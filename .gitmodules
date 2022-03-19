@@ -1,0 +1,9 @@
+[submodule "repositories/btc-bitcoin-core"]
+	path = repositories/btc-bitcoin-core
+	url = git@github.com:bitcoin/bitcoin.git
+[submodule "repositories/eth-go-ethereum"]
+	path = repositories/eth-go-ethereum
+	url = git@github.com:ethereum/go-ethereum.git
+[submodule "repositories/eth-solidity"]
+	path = repositories/eth-solidity
+	url = git@github.com:ethereum/solidity.git
