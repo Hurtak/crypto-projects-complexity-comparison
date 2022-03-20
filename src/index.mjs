@@ -10,7 +10,10 @@ import {
   getLoc,
 } from "./utils.mjs";
 
-const pathsRoot = path.dirname(url.fileURLToPath(import.meta.url));
+const pathsRoot = path.join(
+  path.dirname(url.fileURLToPath(import.meta.url)),
+  ".."
+);
 const paths = {
   root: pathsRoot,
   repositories: path.join(pathsRoot, "./repositories"),

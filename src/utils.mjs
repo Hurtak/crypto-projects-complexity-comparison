@@ -17,7 +17,7 @@ export const getLoc = async (repo, bin) => {
 
   if (!res.stdout) {
     // If there are 0 results, the cloc binary returns empty response
-    return 0
+    return 0;
   }
 
   try {
@@ -56,13 +56,13 @@ export const gitGetDateOfFirstAndLastCommit = async (repo) => {
 };
 
 export const gitCheckoutToCommit = async (repository, commitHash) => {
-  const res = await execa("git", [`checkout`, commitHash], {
+  await execa("git", [`checkout`, commitHash], {
     cwd: repository.root,
   });
 };
 
 export const gitCheckoutToLatest = async (repository) => {
-  const res = await execa("git", [`checkout`, repository.branch], {
+  await execa("git", [`checkout`, repository.branch], {
     cwd: repository.root,
   });
 };

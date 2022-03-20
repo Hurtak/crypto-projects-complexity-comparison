@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "TZ=UTC node index.mjs",
+    "start": "TZ=UTC node src/index.mjs",
     "chart": "serve ."
   },
   "dependencies": {
