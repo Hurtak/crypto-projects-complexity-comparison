@@ -1,12 +1,10 @@
 {
   "name": "crypto-projects-complexity-comparison",
   "version": "1.0.0",
-  "description": "",
+  "license": "MIT",
   "scripts": {
     "start": "TZ=UTC node index.mjs"
   },
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "cloc": "2.9.0",
     "date-fns": "2.28.0",
