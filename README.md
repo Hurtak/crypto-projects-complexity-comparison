@@ -2,17 +2,17 @@
 
 ## Prerequisites
 
-- Node.js is required
+- Node.js and NPM is required
 
 ## Install
 
-- `npm install`
 - Init git submodules `git submodule update --init`
+- Install Node dependencies `npm install`
 
 ## Run
 
 - Analyze repositories `npm run start`
-    - Outputs `json` and `csv` data into `result` folder (removes previous data)
+  - Outputs `json` data into `result` folder (removes previous data)
 
 ## Analysis notes
 
@@ -20,6 +20,8 @@
 
 ## TODO
 
+- exclude benchmarks
 - exclude https://github.com/bitcoin/bitcoin/tree/master/src/qt
-- test submodule
+- notes about how to start chart
+- notes about how to export to csv
 - Chart

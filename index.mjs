@@ -1,7 +1,6 @@
 import * as path from "node:path";
 import * as url from "node:url";
 import * as fs from "node:fs/promises";
-import * as json2csv from "json2csv";
 import {
   gitGetDateOfFirstAndLastCommit,
   gitGetCommitClosestToDate,
@@ -33,6 +32,7 @@ const repoGeneralExcludes = [
 const repositories = [
   {
     key: "bitcoin-core",
+    group: "btc",
     branch: "master",
     root: path.join(paths.repositories, "./btc-bitcoin-core"),
     cloc: {
@@ -44,6 +44,7 @@ const repositories = [
 
   {
     key: "eth-go-ethereum",
+    group: "eth",
     branch: "master",
     root: path.join(paths.repositories, "./eth-go-ethereum"),
     cloc: {
@@ -55,6 +56,7 @@ const repositories = [
 
   {
     key: "eth-solidity",
+    group: "eth",
     branch: "develop",
     root: path.join(paths.repositories, "./eth-solidity"),
     cloc: {
@@ -69,9 +71,13 @@ const main = async () => {
   //
   // Gather data
   //
-  const res = {};
+  const result = [];
   for (const repo of repositories) {
-    res[repo.key] = [];
+    const resultRepo = {
+      key: repo.key,
+      group: repo.group,
+      data: [],
+    };
 
     console.log("Processing", repo.key);
 
@@ -83,7 +89,7 @@ const main = async () => {
       dates.lastRounded
     );
 
-    for (const date of dataInterval.slice(0, 3)) {
+    for (const date of dataInterval) {
       console.log(`  processing ${date.toISOString()}`);
       const commitHash = await gitGetCommitClosestToDate(repo, date);
       console.log(`    checking out to ${commitHash}`);
@@ -91,8 +97,10 @@ const main = async () => {
       const loc = await getLoc(repo, paths.clocBin);
       console.log(`    loc ${loc.toLocaleString()}`);
 
-      res[repo.key].push({ date: date, loc: loc });
+      resultRepo.data.push({ date: date, loc: loc });
     }
+
+    result.push(resultRepo);
 
     await gitCheckoutToLatest(repo);
   }
@@ -107,14 +115,7 @@ const main = async () => {
 
   const filePathRes = path.join(paths.result, "res.json");
   console.log(`Writing to ${filePathRes}`);
-  await fs.writeFile(filePathRes, JSON.stringify(res, null, 2));
-
-  for (const [key, result] of Object.entries(res)) {
-    const csv = json2csv.parse(result);
-    const filePath = path.join(paths.result, `${key}.csv`);
-    console.log(`Writing to ${filePath}`);
-    await fs.writeFile(filePath, csv);
-  }
+  await fs.writeFile(filePathRes, JSON.stringify(result, null, 2));
 };
 
 main();

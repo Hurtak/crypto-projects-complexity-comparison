@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto projects complexity comparison</title>
+
+    <style>
+      .highcharts-figure {
+        min-width: 350px;
+        max-width: 1200px;
+        margin: 64px auto;
+      }
+    </style>
+
+    <script src="./node_modules/highcharts/highcharts.js"></script>
+    <script src="./node_modules/highcharts/modules/data.js"></script>
+    <script src="./node_modules/highcharts/modules/exporting.js"></script>
+    <script src="./node_modules/highcharts/modules/export-data.js"></script>
+    <script src="./node_modules/highcharts/modules/accessibility.js"></script>
+  </head>
+  <body>
+    <figure class="highcharts-figure">
+      <div id="container"></div>
+    </figure>
+
+    <script type="module">
+      import data from "./result/res.json" assert { type: "json" };
+      import groupBy from "./node_modules/lodash-es/groupBy.js";
+      import filter from "./node_modules/lodash-es/filter.js";
+      import reduce from "./node_modules/lodash-es/reduce.js";
+      import map from "./node_modules/lodash-es/map.js";
+      import tap from "./node_modules/lodash-es/tap.js";
+      import mapValues from "./node_modules/lodash-es/mapValues.js";
+      import flow from "./node_modules/lodash-es/flow.js";
+
+      async function main() {
+        const dataKeyToColor = {
+          "bitcoin-core": "#e4d354",
+          "eth-go-ethereum": "#5885AF",
+          "eth-solidity": "#C3E0E5",
+        };
+        const dataKeyToName = {
+          "bitcoin-core": "Bitcoin Core",
+          "eth-go-ethereum": "Ethereum Go",
+          "eth-solidity": "Ethereum Solidity",
+        };
+        const dataGroupToName = {
+          eth: "Ethereum All Repositories",
+        };
+        const dataGroupToColor = {
+          eth: "#274472",
+        };
+
+        const seriesSingle = data.map((result) => {
+          return {
+            name: dataKeyToName[result.key],
+            data: result.data.map((d) => [new Date(d.date).getTime(), d.loc]),
+            color: dataKeyToColor[result.key],
+          };
+        });
+
+        const seriesGrouped = flow(
+          (d) => groupBy(d, (g) => g.group),
+          (d) => map(d, (val, key) => ({ group: key, data: val })),
+          (d) => filter(d, (g) => g.data.length >= 2),
+          (d) =>
+            map(d, (i) => {
+              const data = flow(
+                (i) => reduce(i, (acc, g) => [...acc, ...g.data], []),
+                (d) => groupBy(d, (i) => i.date),
+                (d) => tap(d, console.log),
+                (d) =>
+                  mapValues(d, (i) => reduce(i, (acc, i) => acc + i.loc, 0)),
+                (d) => map(d, (loc, date) => [new Date(date).getTime(), loc])
+              )(i.data);
+
+              return {
+                name: dataGroupToName[i.group],
+                data,
+                color: dataGroupToColor[i.group],
+              };
+            })
+        )(data);
+
+        const series = [...seriesSingle, ...seriesGrouped];
+
+        Highcharts.chart("container", {
+          chart: {
+            height: 500,
+            zoomType: "x",
+          },
+          title: {
+            text: "Crypto Projects Complexity Comparison",
+          },
+          legend: {},
+          subtitle: {
+            text:
+              document.ontouchstart === undefined
+                ? "Click and drag in the plot area to zoom in"
+                : "Pinch the chart to zoom in",
+          },
+          height: "100",
+          xAxis: {
+            type: "datetime",
+          },
+          yAxis: {
+            title: {
+              text: "Lines of code",
+            },
+          },
+          plotOptions: {
+            line: {
+              lineWidth: 3,
+              states: {
+                hover: {
+                  lineWidth: 1,
+                },
+              },
+            },
+          },
+          series,
+        });
+      }
+      main();
+    </script>
+  </body>
+</html>
