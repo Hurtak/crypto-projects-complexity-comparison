@@ -2,8 +2,8 @@ import { execa } from "execa";
 import { parseISO, addMonths, set, eachMonthOfInterval } from "date-fns";
 import { flow } from "lodash-es";
 
-export const getLoc = async (repo) => {
-  const res = await execa(paths.clocBin, [
+export const getLoc = async (repo, bin) => {
+  const res = await execa(bin, [
     `--fullpath`,
     `--exclude-lang`,
     repo.cloc.excludeLang.join(","),

@@ -30,8 +30,8 @@ const repoGeneralExcludes = [
   "reStructuredText",
 ];
 
-const repositories = {
-  btcBitcoinCore: {
+const repositories = [
+  {
     key: "bitcoin-core",
     branch: "master",
     root: path.join(paths.repositories, "./btc-bitcoin-core"),
@@ -42,7 +42,7 @@ const repositories = {
     },
   },
 
-  ethGoEthereum: {
+  {
     key: "eth-go-ethereum",
     branch: "master",
     root: path.join(paths.repositories, "./eth-go-ethereum"),
@@ -53,7 +53,7 @@ const repositories = {
     },
   },
 
-  ethSolidity: {
+  {
     key: "eth-solidity",
     branch: "develop",
     root: path.join(paths.repositories, "./eth-solidity"),
@@ -63,14 +63,14 @@ const repositories = {
       excludeMatchFile: ".*test.*",
     },
   },
-};
+];
 
 const main = async () => {
   //
   // Gather data
   //
   const res = {};
-  for (const repo of Object.values(repositories)) {
+  for (const repo of repositories) {
     res[repo.key] = [];
 
     console.log("Processing", repo.key);
@@ -88,7 +88,7 @@ const main = async () => {
       const commitHash = await gitGetCommitClosestToDate(repo, date);
       console.log(`    checking out to ${commitHash}`);
       await gitCheckoutToCommit(repo, commitHash);
-      const loc = await getLoc(repo);
+      const loc = await getLoc(repo, paths.clocBin);
       console.log(`    loc ${loc.toLocaleString()}`);
 
       res[repo.key].push({ date: date, loc: loc });
