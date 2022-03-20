@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "TZ=UTC node index.mjs"
+    "start": "TZ=UTC node index.mjs",
+    "chart": "serve ."
   },
   "dependencies": {
     "cloc": "2.9.0",
     "date-fns": "2.28.0",
     "execa": "6.1.0",
-    "highcharts": "^10.0.0",
-    "lodash-es": "4.17.21"
+    "highcharts": "10.0.0",
+    "lodash-es": "4.17.21",
+    "serve": "13.0.2"
   }
 }

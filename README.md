@@ -11,8 +11,12 @@
 
 ## Run
 
-- Analyze repositories `npm run start`
-  - Outputs `json` data into `result` folder (removes previous data)
+- Analyze repositories
+  - Run `npm run start`
+  - Generates `result/res.json`
+- Show chart
+  - Run `npm run chart`
+  - Point your browser to `http://localhost:3000/chart`
 
 ## Analysis notes
 
@@ -20,8 +24,4 @@
 
 ## TODO
 
-- exclude benchmarks
-- exclude https://github.com/bitcoin/bitcoin/tree/master/src/qt
-- notes about how to start chart
-- notes about how to export to csv
 - Chart
