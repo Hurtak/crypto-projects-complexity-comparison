@@ -11,10 +11,15 @@
 
 ## Run
 
-- `npm run start`
+- Analyze repositories `npm run start`
+    - Outputs `json` and `csv` data into `result` folder (removes previous data)
+
+## Analysis notes
+
+- `go-ethereum` seems to be using submodules, we are not cloning/initializing these submodules (we do not do `git submodule --recursive`), so they are not included in the analysis. These submodules seem to only be testing related, so it is probably correct that they are not included.
 
 ## TODO
 
-- exlude https://github.com/bitcoin/bitcoin/tree/master/src/qt
+- exclude https://github.com/bitcoin/bitcoin/tree/master/src/qt
 - test submodule
 - Chart

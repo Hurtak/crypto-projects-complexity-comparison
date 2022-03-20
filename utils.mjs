@@ -15,15 +15,19 @@ export const getLoc = async (repo, bin) => {
     repo.root,
   ]);
 
+  if (!res.stdout) {
+    // If there are 0 results, the cloc binary returns empty response
+    return 0
+  }
+
   try {
     const loc = JSON.parse(res.stdout).SUM.code;
     return loc;
   } catch (e) {
-    // console.error("Error parsing");
-    // console.error(res);
-    // console.error(e);
-    // process.exit(1);
-    return 0;
+    console.error("Error parsing");
+    console.error(res);
+    console.error(e);
+    process.exit(1);
   }
 };
 
