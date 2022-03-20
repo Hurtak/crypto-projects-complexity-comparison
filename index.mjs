@@ -18,16 +18,18 @@ const paths = {
   clocBin: path.join(pathsRoot, "./node_modules/.bin/cloc"),
 };
 
-const repoGeneralExcludes = [
+const languageExclude = [
   "JSON",
   "SVG",
   "Markdown",
-  // "XML",
   "YAML",
   "HTML",
   "CSS",
   "reStructuredText",
 ];
+
+const folderExclude = ["test", "/bench"];
+const fileExclude = ["test", "bench"];
 
 const repositories = [
   {
@@ -36,9 +38,13 @@ const repositories = [
     branch: "master",
     root: path.join(paths.repositories, "./btc-bitcoin-core"),
     cloc: {
-      excludeLang: [...repoGeneralExcludes, "Qt Linguist", "Qt"],
-      excludeMatchDirectory: "test",
-      excludeMatchFile: ".*test.*",
+      excludeLang: [
+        ...languageExclude,
+        "Qt", // ui code
+        "Qt Linguist", // translations
+      ],
+      excludeMatchDirectory: `(${folderExclude.join("|")}|/src/qt)`, // "/src/qt" UI code
+      excludeMatchFile: `(${fileExclude.join("|")})`,
     },
   },
 
@@ -48,9 +54,11 @@ const repositories = [
     branch: "master",
     root: path.join(paths.repositories, "./eth-go-ethereum"),
     cloc: {
-      excludeLang: repoGeneralExcludes,
-      excludeMatchDirectory: "test",
-      excludeMatchFile: ".*test.*",
+      excludeLang: languageExclude,
+      // "/vendor" 2019-11 and before - committed go downloaded packages into the repository
+      // "/Godeps" 2016-09 and before - committed go downloaded packages into the repository
+      excludeMatchDirectory: `(${folderExclude.join("|")}|/vendor|/Godeps)`,
+      excludeMatchFile: `(${fileExclude.join("|")})`,
     },
   },
 
@@ -60,9 +68,9 @@ const repositories = [
     branch: "develop",
     root: path.join(paths.repositories, "./eth-solidity"),
     cloc: {
-      excludeLang: repoGeneralExcludes,
-      excludeMatchDirectory: "test",
-      excludeMatchFile: ".*test.*",
+      excludeLang: languageExclude,
+      excludeMatchDirectory: `(${folderExclude.join("|")})`,
+      excludeMatchFile: `(${fileExclude.join("|")})`,
     },
   },
 ];
