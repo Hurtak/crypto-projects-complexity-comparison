@@ -1,6 +1,6 @@
 # Crypto projects complexity comparison
 
-This project is followup to Ethereum development lead
+This project is followup to this Ethereum development lead tweet
 
 [![Tweet](./img/tweet.png)](https://twitter.com/peter_szilagyi/status/1504887158699704321)
 
@@ -15,8 +15,8 @@ This project tries to:
 
 [![Result](./img/result.png)](./img/result.png)
 
-- Data raw available in [./result/res.json](./result/res.json)
-- You can generate `png` or `csv` easily by running [show chart command](#Start) and clicking on the export buttons
+- Raw data available in [./result/res.json](./result/res.json)
+- Or you can generate the `json`, `png` or `csv` yourself by running some of the commands in the [Run docs section](#Run)
 
 ## Analysis method
 
@@ -60,3 +60,4 @@ This project tries to:
 - Show chart
   - Run `npm run chart`
   - Point your browser to `http://localhost:3000/chart`
+    - Click the chart settings button for `csv` or `png` export
