@@ -28,7 +28,6 @@
         map,
         mapValues,
         reduce,
-        tap,
       } from "./node_modules/lodash-es/lodash.js";
 
       import Highcharts from "./node_modules/highcharts/es-modules/masters/highcharts.src.js";
@@ -72,7 +71,6 @@
               const data = flow(
                 (i) => reduce(i, (acc, g) => [...acc, ...g.data], []),
                 (d) => groupBy(d, (i) => i.date),
-                (d) => tap(d, console.log),
                 (d) =>
                   mapValues(d, (i) => reduce(i, (acc, i) => acc + i.loc, 0)),
                 (d) => map(d, (loc, date) => [new Date(date).getTime(), loc])
