@@ -15,9 +15,6 @@ This project tries to:
 
 [![Result](./img/result.png)](./img/result.png)
 
-- The Bitcoin average code growth per year `17%`
-- The Ethereum average code growth per year `46%`
-
 | Year |     BTC |              |     ETH |              |
 | ---: | ------: | -----------: | ------: | -----------: |
 |      |     LOC | % change y/y |     LOC | % change y/y |
