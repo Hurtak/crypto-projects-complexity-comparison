@@ -75,6 +75,7 @@ This project tries to:
 ### Start
 
 - Analyze repositories
+  - Run `git submodule update --remote --merge` to update the submodules
   - Run `npm run start`
   - Generates `result/res.json`
 - Show chart
